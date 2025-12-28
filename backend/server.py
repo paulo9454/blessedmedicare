@@ -67,6 +67,73 @@ async def get_status_checks():
     
     return status_checks
 
+# Contact Form Endpoints
+@api_router.post("/contact", response_model=ContactInquiry)
+async def create_contact_inquiry(inquiry: ContactInquiryCreate):
+    """
+    Create a new contact inquiry from the website contact form
+    """
+    try:
+        # Create ContactInquiry object with additional fields
+        inquiry_dict = inquiry.model_dump()
+        inquiry_obj = ContactInquiry(**inquiry_dict)
+        
+        # Convert to dict and serialize datetime to ISO string for MongoDB
+        doc = inquiry_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        
+        # Insert into MongoDB
+        result = await db.contact_inquiries.insert_one(doc)
+        
+        if not result.inserted_id:
+            raise HTTPException(status_code=500, detail="Failed to save inquiry")
+        
+        logger.info(f"New contact inquiry saved: {inquiry_obj.id} from {inquiry_obj.name}")
+        return inquiry_obj
+    except Exception as e:
+        logger.error(f"Error saving contact inquiry: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to save inquiry. Please try again.")
+
+@api_router.get("/contact", response_model=List[ContactInquiry])
+async def get_contact_inquiries():
+    """
+    Get all contact inquiries (for admin use)
+    """
+    try:
+        # Exclude MongoDB's _id field from the query results
+        inquiries = await db.contact_inquiries.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+        
+        # Convert ISO string timestamps back to datetime objects
+        for inquiry in inquiries:
+            if isinstance(inquiry['created_at'], str):
+                inquiry['created_at'] = datetime.fromisoformat(inquiry['created_at'])
+        
+        return inquiries
+    except Exception as e:
+        logger.error(f"Error fetching contact inquiries: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch inquiries")
+
+@api_router.get("/contact/{inquiry_id}", response_model=ContactInquiry)
+async def get_contact_inquiry(inquiry_id: str):
+    """
+    Get a specific contact inquiry by ID
+    """
+    try:
+        inquiry = await db.contact_inquiries.find_one({"id": inquiry_id}, {"_id": 0})
+        if not inquiry:
+            raise HTTPException(status_code=404, detail="Inquiry not found")
+        
+        # Convert ISO string timestamp back to datetime object
+        if isinstance(inquiry['created_at'], str):
+            inquiry['created_at'] = datetime.fromisoformat(inquiry['created_at'])
+        
+        return ContactInquiry(**inquiry)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching contact inquiry {inquiry_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch inquiry")
+
 # Include the router in the main app
 app.include_router(api_router)
 
