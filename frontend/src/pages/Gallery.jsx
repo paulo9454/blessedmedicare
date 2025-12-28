@@ -1,7 +1,37 @@
-import React from 'react';
-import { Image } from 'lucide-react';
+import React, { useState } from 'react';
+import { X } from 'lucide-react';
 
 export const Gallery = () => {
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const galleryImages = [
+    {
+      url: 'https://customer-assets.emergentagent.com/job_healthcenter-2/artifacts/91nsv0e5_exterior.jpeg',
+      title: 'Blessed Medicare Centre - Exterior',
+      description: 'Our welcoming facility located in Pipeline, Nairobi',
+    },
+    {
+      url: 'https://customer-assets.emergentagent.com/job_healthcenter-2/artifacts/732s111w_interior.jpeg',
+      title: 'Consultation Room',
+      description: 'Modern consultation room with examination facilities',
+    },
+    {
+      url: 'https://customer-assets.emergentagent.com/job_healthcenter-2/artifacts/8g3utl4z_interior2.jpeg',
+      title: 'Patient Ward',
+      description: 'Clean and comfortable patient care area',
+    },
+    {
+      url: 'https://customer-assets.emergentagent.com/job_healthcenter-2/artifacts/6v8uz2oa_equipments.jpeg',
+      title: 'Laboratory Equipment',
+      description: 'State-of-the-art laboratory with diagnostic equipment',
+    },
+    {
+      url: 'https://customer-assets.emergentagent.com/job_healthcenter-2/artifacts/nj5biuau_equipments1.jpeg',
+      title: 'Diagnostic Equipment',
+      description: 'Advanced ultrasound and diagnostic technology',
+    },
+  ];
+
   return (
     <div>
       {/* Hero Section */}
@@ -14,7 +44,7 @@ export const Gallery = () => {
         </div>
       </section>
 
-      {/* Gallery Placeholder */}
+      {/* Gallery Grid */}
       <section className="section" style={{ background: 'var(--bg-page)' }}>
         <div className="container">
           <div
@@ -24,46 +54,55 @@ export const Gallery = () => {
               gap: '1.5rem',
             }}
           >
-            {[1, 2, 3, 4, 5, 6].map((item) => (
+            {galleryImages.map((image, index) => (
               <div
-                key={item}
+                key={index}
                 style={{
-                  background: 'var(--bg-section)',
+                  background: 'var(--bg-card)',
                   border: '1px solid var(--border-light)',
                   borderRadius: '12px',
-                  aspectRatio: '16/9',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-                  gap: '1rem',
-                  padding: '2rem',
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                 }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+                onClick={() => setSelectedImage(image)}
               >
-                <Image size={48} color="var(--text-muted)" />
-                <p className="body-small" style={{ textAlign: 'center' }}>
-                  Facility Photo {item}
-                </p>
+                <div
+                  style={{
+                    aspectRatio: '16/9',
+                    overflow: 'hidden',
+                    background: 'var(--bg-section)',
+                  }}
+                >
+                  <img
+                    src={image.url}
+                    alt={image.title}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
+                  />
+                </div>
+                <div style={{ padding: '1rem' }}>
+                  <h3
+                    className="service-title"
+                    style={{ fontSize: '1rem', marginBottom: '0.5rem' }}
+                  >
+                    {image.title}
+                  </h3>
+                  <p className="body-small">{image.description}</p>
+                </div>
               </div>
             ))}
-          </div>
-
-          <div
-            style={{
-              marginTop: '3rem',
-              padding: '2rem',
-              background: 'var(--accent-wash)',
-              borderRadius: '12px',
-              textAlign: 'center',
-            }}
-          >
-            <h3 className="heading-3" style={{ marginBottom: '0.5rem' }}>
-              Photo Gallery Coming Soon
-            </h3>
-            <p className="body-medium" style={{ color: 'var(--text-secondary)' }}>
-              We're currently updating our gallery with photos of our facility, staff, and services.
-              Check back soon!
-            </p>
           </div>
         </div>
       </section>
