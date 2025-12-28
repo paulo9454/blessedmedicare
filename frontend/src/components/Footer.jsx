@@ -10,7 +10,7 @@ export const Footer = () => {
           <div className="footer-section">
             <h3>Blessed Medicare Centre</h3>
             <p>
-              Quality healthcare you can trust. Serving Nairobi and Mombasa with
+              Quality healthcare you can trust. Serving Nairobi with
               compassionate medical services 24/7.
             </p>
           </div>
