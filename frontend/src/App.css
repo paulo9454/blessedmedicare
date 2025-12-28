@@ -33,6 +33,13 @@ body {
   background: var(--bg-page);
 }
 
+/* Hide Emergent watermark */
+#emergent-badge {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
+
 .heading-1 { 
   font-family: system-ui, sans-serif; 
   font-weight: 700; 
