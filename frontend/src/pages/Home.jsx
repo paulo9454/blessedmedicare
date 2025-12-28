@@ -17,7 +17,7 @@ export const Home = () => {
           </h1>
           <p className="hero-subtitle">
             Blessed Medicare Centre provides compassionate, professional medical care
-            to families in Nairobi and Mombasa. Your health is our priority.
+            to families in Nairobi. Your health is our priority.
           </p>
           <div className="hero-cta">
             <Link to="/contact" className="btn-primary">
