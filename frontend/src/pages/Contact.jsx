@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, Clock, Send } from 'lucide-react';
+import axios from 'axios';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
@@ -10,23 +14,43 @@ export const Contact = () => {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+    // Clear error when user starts typing
+    if (error) setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Connect to backend API
-    console.log('Form submitted:', formData);
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({ name: '', email: '', phone: '', message: '' });
-    }, 3000);
+    setLoading(true);
+    setError('');
+    
+    try {
+      const response = await axios.post(`${API}/contact`, formData);
+      
+      if (response.status === 200) {
+        setSubmitted(true);
+        // Reset form after 3 seconds
+        setTimeout(() => {
+          setSubmitted(false);
+          setFormData({ name: '', email: '', phone: '', message: '' });
+        }, 3000);
+      }
+    } catch (err) {
+      console.error('Error submitting contact form:', err);
+      setError(
+        err.response?.data?.detail || 
+        'Unable to send message. Please try again or call us directly at 0721 480929.'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
