@@ -41,10 +41,9 @@ export const Footer = () => {
           </div>
 
           <div className="footer-section">
-            <h3>Service Areas</h3>
+            <h3>Service Area</h3>
             <p>Nairobi</p>
-            <p>Mombasa</p>
-            <p>Surrounding Counties</p>
+            <p>Surrounding Areas</p>
           </div>
         </div>
 
