@@ -1,8 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Phone, MapPin, Clock, Shield, Heart, Users, Award } from 'lucide-react';
+import { Calendar, Phone, MapPin, Clock, Shield, Heart, Users, Award, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const Home = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const facilityImages = [
+    {
+      url: 'https://customer-assets.emergentagent.com/job_healthcenter-2/artifacts/91nsv0e5_exterior.jpeg',
+      title: 'Blessed Medicare Centre',
+      description: 'Our welcoming facility in Pipeline, Nairobi',
+    },
+    {
+      url: 'https://customer-assets.emergentagent.com/job_healthcenter-2/artifacts/732s111w_interior.jpeg',
+      title: 'Modern Consultation Rooms',
+      description: 'Professional medical consultation facilities',
+    },
+    {
+      url: 'https://customer-assets.emergentagent.com/job_healthcenter-2/artifacts/8g3utl4z_interior2.jpeg',
+      title: 'Comfortable Patient Care',
+      description: 'Clean and comfortable patient wards',
+    },
+    {
+      url: 'https://customer-assets.emergentagent.com/job_healthcenter-2/artifacts/6v8uz2oa_equipments.jpeg',
+      title: 'Advanced Laboratory',
+      description: 'State-of-the-art diagnostic equipment',
+    },
+    {
+      url: 'https://customer-assets.emergentagent.com/job_healthcenter-2/artifacts/nj5biuau_equipments1.jpeg',
+      title: 'Diagnostic Technology',
+      description: 'Modern ultrasound and imaging equipment',
+    },
+  ];
+
+  // Auto-advance slideshow
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % facilityImages.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [facilityImages.length]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % facilityImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + facilityImages.length) % facilityImages.length);
+  };
+
   return (
     <div>
       {/* Hero Section */}
