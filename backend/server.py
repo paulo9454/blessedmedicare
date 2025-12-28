@@ -75,10 +75,97 @@ async def get_status_checks():
     return status_checks
 
 # Contact Form Endpoints
+async def send_contact_email(inquiry: ContactInquiry):
+    """
+    Send email notification when new contact inquiry is received
+    """
+    try:
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #8FEC78, #81DD67); padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }}
+                .header h1 {{ color: white; margin: 0; font-size: 24px; }}
+                .content {{ background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; }}
+                .field {{ margin-bottom: 20px; }}
+                .label {{ font-weight: bold; color: #003720; margin-bottom: 5px; }}
+                .value {{ color: #0e0f0c; padding: 10px; background: #f5f5f5; border-radius: 4px; }}
+                .footer {{ background: #f9f9f9; padding: 20px; text-align: center; border-radius: 0 0 8px 8px; font-size: 12px; color: #666; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>🏥 New Contact Inquiry</h1>
+                </div>
+                <div class="content">
+                    <p>You have received a new contact inquiry from the Blessed Medicare Centre website:</p>
+                    
+                    <div class="field">
+                        <div class="label">Name:</div>
+                        <div class="value">{inquiry.name}</div>
+                    </div>
+                    
+                    <div class="field">
+                        <div class="label">Email:</div>
+                        <div class="value">{inquiry.email}</div>
+                    </div>
+                    
+                    <div class="field">
+                        <div class="label">Phone:</div>
+                        <div class="value">{inquiry.phone}</div>
+                    </div>
+                    
+                    <div class="field">
+                        <div class="label">Message:</div>
+                        <div class="value">{inquiry.message}</div>
+                    </div>
+                    
+                    <div class="field">
+                        <div class="label">Inquiry ID:</div>
+                        <div class="value">{inquiry.id}</div>
+                    </div>
+                    
+                    <div class="field">
+                        <div class="label">Received:</div>
+                        <div class="value">{inquiry.created_at.strftime('%B %d, %Y at %I:%M %p')}</div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <p><strong>Blessed Medicare Centre</strong></p>
+                    <p>Pipeline (kware), Kware stage mpya, Outer Ring Rd, Nairobi</p>
+                    <p>Phone: 0721 480929 | Open 24 Hours</p>
+                    <p style="margin-top: 15px; color: #999;">Designed & Managed by Mose Digital</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        params = {
+            "from": SENDER_EMAIL,
+            "to": [BUSINESS_EMAIL],
+            "subject": f"New Contact Inquiry from {inquiry.name}",
+            "html": html_content
+        }
+        
+        # Run sync SDK in thread to keep FastAPI non-blocking
+        email_result = await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"Email notification sent for inquiry {inquiry.id}: {email_result.get('id')}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send email for inquiry {inquiry.id}: {str(e)}")
+        # Don't fail the request if email fails - inquiry is already saved
+        return False
+
 @api_router.post("/contact", response_model=ContactInquiry)
 async def create_contact_inquiry(inquiry: ContactInquiryCreate):
     """
     Create a new contact inquiry from the website contact form
+    Sends email notification to business email
     """
     try:
         # Create ContactInquiry object with additional fields
@@ -96,6 +183,10 @@ async def create_contact_inquiry(inquiry: ContactInquiryCreate):
             raise HTTPException(status_code=500, detail="Failed to save inquiry")
         
         logger.info(f"New contact inquiry saved: {inquiry_obj.id} from {inquiry_obj.name}")
+        
+        # Send email notification (non-blocking - don't wait for result)
+        asyncio.create_task(send_contact_email(inquiry_obj))
+        
         return inquiry_obj
     except Exception as e:
         logger.error(f"Error saving contact inquiry: {str(e)}")
