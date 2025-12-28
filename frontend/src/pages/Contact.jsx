@@ -212,9 +212,9 @@ export const Contact = () => {
                 />
               </div>
 
-              <button type="submit" className="btn-primary" style={{ width: '100%' }}>
+              <button type="submit" className="btn-primary" style={{ width: '100%' }} disabled={loading}>
                 <Send size={20} />
-                Send Message
+                {loading ? 'Sending...' : 'Send Message'}
               </button>
             </form>
           </div>
