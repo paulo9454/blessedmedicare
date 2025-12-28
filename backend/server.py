@@ -4,16 +4,23 @@ from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
+import asyncio
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
 from typing import List
 import uuid
 from datetime import datetime, timezone
 from models import ContactInquiry, ContactInquiryCreate
+import resend
 
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Resend API Configuration
+resend.api_key = os.environ.get('RESEND_API_KEY', '')
+SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
+BUSINESS_EMAIL = os.environ.get('BUSINESS_EMAIL', 'info@blessedmedicare.co.ke')
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
