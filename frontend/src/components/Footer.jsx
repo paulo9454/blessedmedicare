@@ -52,7 +52,7 @@ export const Footer = () => {
             <p>&copy; {new Date().getFullYear()} Blessed Medicare Centre. All rights reserved.</p>
           </div>
           <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-            <p>Designed & Managed by Mose Digital</p>
+            <p>Website developed by Mose Digital</p>
           </div>
         </div>
       </div>
