@@ -54,7 +54,7 @@ export const About = () => {
             <div className="body-large" style={{ marginBottom: '1.5rem' }}>
               Blessed Medicare Centre was established with a simple yet profound goal: to provide
               quality healthcare that every family deserves. Located in the heart of Pipeline, Nairobi,
-              we serve the communities of Nairobi and Mombasa with dedication and care.
+              we serve the communities of Nairobi and surrounding areas with dedication and care.
             </div>
             <div className="body-large" style={{ marginBottom: '1.5rem' }}>
               Our facility operates 24 hours a day, 7 days a week, ensuring that medical care is
