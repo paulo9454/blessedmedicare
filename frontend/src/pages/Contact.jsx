@@ -128,7 +128,23 @@ export const Contact = () => {
                   fontWeight: 500,
                 }}
               >
-                Thank you! Your message has been sent successfully.
+                ✓ Thank you! Your message has been sent successfully. We'll get back to you soon.
+              </div>
+            )}
+
+            {error && (
+              <div
+                style={{
+                  background: '#fee',
+                  color: '#c33',
+                  padding: '1rem',
+                  borderRadius: '8px',
+                  marginBottom: '1.5rem',
+                  textAlign: 'center',
+                  fontSize: '0.875rem',
+                }}
+              >
+                {error}
               </div>
             )}
 
