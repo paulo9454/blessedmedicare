@@ -48,7 +48,12 @@ export const Footer = () => {
         </div>
 
         <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} Blessed Medicare Centre. All rights reserved.</p>
+          <div style={{ marginBottom: '0.5rem' }}>
+            <p>&copy; {new Date().getFullYear()} Blessed Medicare Centre. All rights reserved.</p>
+          </div>
+          <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+            <p>Designed & Managed by Mose Digital</p>
+          </div>
         </div>
       </div>
     </footer>
