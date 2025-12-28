@@ -107,6 +107,77 @@ export const Gallery = () => {
         </div>
       </section>
 
+      {/* Lightbox Modal */}
+      {selectedImage && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.9)',
+            zIndex: 1000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '2rem',
+          }}
+          onClick={() => setSelectedImage(null)}
+        >
+          <button
+            style={{
+              position: 'absolute',
+              top: '1rem',
+              right: '1rem',
+              background: 'white',
+              border: 'none',
+              borderRadius: '50%',
+              width: '48px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+            }}
+            onClick={() => setSelectedImage(null)}
+          >
+            <X size={24} />
+          </button>
+          <div
+            style={{
+              maxWidth: '90vw',
+              maxHeight: '90vh',
+              background: 'white',
+              borderRadius: '12px',
+              overflow: 'hidden',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={selectedImage.url}
+              alt={selectedImage.title}
+              style={{
+                maxWidth: '100%',
+                maxHeight: '80vh',
+                width: 'auto',
+                height: 'auto',
+                display: 'block',
+              }}
+            />
+            <div style={{ padding: '1.5rem' }}>
+              <h3 className="heading-3" style={{ marginBottom: '0.5rem' }}>
+                {selectedImage.title}
+              </h3>
+              <p className="body-medium" style={{ color: 'var(--text-secondary)' }}>
+                {selectedImage.description}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Features Section */}
       <section className="section" style={{ background: 'var(--bg-section)' }}>
         <div className="container">
