@@ -52,54 +52,21 @@ export const Home = () => {
 
   return (
     <div>
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <div className="info-badge">
-            <Clock size={16} />
-            Open 24 Hours
-          </div>
-          <h1 className="hero-title">
-            Quality Healthcare You Can Trust
-          </h1>
-          <p className="hero-subtitle">
-            Blessed Medicare Centre provides compassionate, professional medical care
-            to families in Nairobi. Your health is our priority.
-          </p>
-          <div className="hero-cta">
-            <Link to="/contact" className="btn-primary">
-              <Calendar size={20} />
-              Book Appointment
-            </Link>
-            <Link to="/services" className="btn-secondary">
-              Our Services
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Facility Slideshow */}
-      <section className="section" style={{ background: 'var(--bg-page)', paddingTop: '2rem' }}>
-        <div className="container">
-          <div className="section-header">
-            <h2 className="heading-2 section-title">Our Medical Facility</h2>
-            <p className="body-large section-description">
-              Take a virtual tour of our modern healthcare facility
-            </p>
-          </div>
-
+      {/* Facility Slideshow - NOW FIRST */}
+      <section style={{ background: 'var(--bg-page)', paddingTop: '3.5rem' }}>
+        <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
           <div
             style={{
               position: 'relative',
-              maxWidth: '1000px',
+              maxWidth: '100%',
               margin: '0 auto',
-              borderRadius: '12px',
+              borderRadius: '16px',
               overflow: 'hidden',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
             }}
           >
             {/* Slideshow Images */}
-            <div style={{ position: 'relative', aspectRatio: '16/9', background: '#000' }}>
+            <div style={{ position: 'relative', aspectRatio: '21/9', background: '#000' }}>
               {facilityImages.map((image, index) => (
                 <div
                   key={index}
@@ -110,7 +77,7 @@ export const Home = () => {
                     width: '100%',
                     height: '100%',
                     opacity: currentSlide === index ? 1 : 0,
-                    transition: 'opacity 0.5s ease-in-out',
+                    transition: 'opacity 1s ease-in-out',
                   }}
                 >
                   <img
@@ -120,30 +87,34 @@ export const Home = () => {
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
+                      filter: 'brightness(0.85)',
                     }}
                   />
-                  {/* Overlay with text */}
+                  {/* Overlay with gradient */}
                   <div
                     style={{
                       position: 'absolute',
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)',
-                      padding: '2rem',
+                      background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 100%)',
+                      padding: '3rem 2rem 2rem',
                       color: 'white',
                     }}
                   >
                     <h3
                       style={{
-                        fontWeight: 600,
-                        fontSize: 'clamp(1.25rem, 3vw, 1.75rem)',
-                        marginBottom: '0.5rem',
+                        fontWeight: 700,
+                        fontSize: 'clamp(1.5rem, 3vw, 2.5rem)',
+                        marginBottom: '0.75rem',
+                        textShadow: '0 2px 8px rgba(0,0,0,0.5)',
                       }}
                     >
                       {image.title}
                     </h3>
-                    <p style={{ fontSize: '1rem', opacity: 0.9 }}>{image.description}</p>
+                    <p style={{ fontSize: 'clamp(1rem, 2vw, 1.25rem)', opacity: 0.95, textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>
+                      {image.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -154,63 +125,75 @@ export const Home = () => {
               onClick={prevSlide}
               style={{
                 position: 'absolute',
-                left: '1rem',
+                left: '1.5rem',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                background: 'rgba(255, 255, 255, 0.9)',
+                background: 'rgba(255, 255, 255, 0.95)',
                 border: 'none',
                 borderRadius: '50%',
-                width: '48px',
-                height: '48px',
+                width: '56px',
+                height: '56px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                transition: 'background 0.2s ease',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                transition: 'all 0.2s ease',
                 zIndex: 10,
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = 'white')}
-              onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)')}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'white';
+                e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.95)';
+                e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+              }}
             >
-              <ChevronLeft size={24} color="var(--text-primary)" />
+              <ChevronLeft size={28} color="var(--text-primary)" />
             </button>
 
             <button
               onClick={nextSlide}
               style={{
                 position: 'absolute',
-                right: '1rem',
+                right: '1.5rem',
                 top: '50%',
                 transform: 'translateY(-50%)',
-                background: 'rgba(255, 255, 255, 0.9)',
+                background: 'rgba(255, 255, 255, 0.95)',
                 border: 'none',
                 borderRadius: '50%',
-                width: '48px',
-                height: '48px',
+                width: '56px',
+                height: '56px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                transition: 'background 0.2s ease',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                transition: 'all 0.2s ease',
                 zIndex: 10,
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = 'white')}
-              onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)')}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'white';
+                e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.95)';
+                e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
+              }}
             >
-              <ChevronRight size={24} color="var(--text-primary)" />
+              <ChevronRight size={28} color="var(--text-primary)" />
             </button>
 
             {/* Slide Indicators */}
             <div
               style={{
                 position: 'absolute',
-                bottom: '1rem',
+                bottom: '1.5rem',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 display: 'flex',
-                gap: '8px',
+                gap: '10px',
                 zIndex: 10,
               }}
             >
@@ -219,24 +202,47 @@ export const Home = () => {
                   key={index}
                   onClick={() => setCurrentSlide(index)}
                   style={{
-                    width: currentSlide === index ? '32px' : '12px',
+                    width: currentSlide === index ? '40px' : '12px',
                     height: '12px',
                     borderRadius: '6px',
                     border: 'none',
                     background: currentSlide === index ? 'white' : 'rgba(255, 255, 255, 0.5)',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
                   }}
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
             </div>
           </div>
+        </div>
+      </section>
 
-          <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-            <Link to="/gallery" className="btn-secondary">
-              View Full Gallery
-            </Link>
+      {/* Hero Section with CTA - NOW BELOW SLIDESHOW */}
+      <section style={{ background: 'var(--gradient-hero)', padding: '4rem 1.5rem' }}>
+        <div className="container">
+          <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
+            <div className="info-badge" style={{ justifyContent: 'center', marginBottom: '1.5rem' }}>
+              <Clock size={18} />
+              Open 24 Hours
+            </div>
+            <h1 className="hero-title" style={{ marginBottom: '1.5rem' }}>
+              Quality Healthcare You Can Trust
+            </h1>
+            <p className="hero-subtitle" style={{ marginBottom: '2.5rem' }}>
+              Blessed Medicare Centre provides compassionate, professional medical care
+              to families in Nairobi. Your health is our priority.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link to="/contact" className="btn-primary" style={{ fontSize: '1.125rem', padding: '16px 32px' }}>
+                <Calendar size={22} />
+                Book Appointment
+              </Link>
+              <Link to="/services" className="btn-secondary" style={{ fontSize: '1.125rem', padding: '16px 32px' }}>
+                Our Services
+              </Link>
+            </div>
           </div>
         </div>
       </section>
