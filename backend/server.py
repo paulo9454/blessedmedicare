@@ -237,6 +237,7 @@ async def create_contact_inquiry(inquiry: ContactInquiryCreate):
     Create a new contact inquiry from the website contact form
     Sends email notification to business email
     """
+    db = await get_db()
     if db is None:
         raise HTTPException(status_code=503, detail="Database connection unavailable")
         
