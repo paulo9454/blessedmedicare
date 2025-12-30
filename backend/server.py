@@ -114,6 +114,7 @@ async def root():
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
+    db = await get_db()
     if db is None:
         raise HTTPException(status_code=503, detail="Database connection unavailable")
         
