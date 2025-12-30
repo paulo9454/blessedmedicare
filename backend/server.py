@@ -294,6 +294,7 @@ async def get_contact_inquiry(inquiry_id: str):
     """
     Get a specific contact inquiry by ID
     """
+    db = await get_db()
     if db is None:
         raise HTTPException(status_code=503, detail="Database connection unavailable")
         
