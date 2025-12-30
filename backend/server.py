@@ -135,11 +135,11 @@ class StatusCheckCreate(BaseModel):
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
-async def root():
+async def api_root():
     return {"message": "Blessed Medicare Centre API"}
 
 @api_router.get("/health")
-async def health_check():
+async def api_health_check():
     """
     Fast health check endpoint for Kubernetes/Docker.
     Does not depend on database - returns immediately.
