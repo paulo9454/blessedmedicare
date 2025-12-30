@@ -22,10 +22,26 @@ resend.api_key = os.environ.get('RESEND_API_KEY', '')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
 BUSINESS_EMAIL = os.environ.get('BUSINESS_EMAIL', 'info@blessedmedicare.co.ke')
 
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# Configure logging first
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+# MongoDB connection with error handling
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+db_name = os.environ.get('DB_NAME', 'blessed_medicare')
+
+try:
+    client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=5000)
+    db = client[db_name]
+    logger.info(f"MongoDB connection configured for: {db_name}")
+except Exception as e:
+    logger.error(f"MongoDB connection error: {str(e)}")
+    # Continue startup even if MongoDB fails initially
+    client = None
+    db = None
 
 # Create the main app without a prefix
 app = FastAPI()
