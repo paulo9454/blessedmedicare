@@ -92,6 +92,15 @@ async def close_db():
 # Create the main app without a prefix
 app = FastAPI()
 
+# Root health check for Kubernetes (no /api prefix)
+@app.get("/")
+async def root():
+    return {"status": "ok"}
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
