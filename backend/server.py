@@ -244,6 +244,9 @@ async def get_contact_inquiry(inquiry_id: str):
     """
     Get a specific contact inquiry by ID
     """
+    if not db:
+        raise HTTPException(status_code=503, detail="Database connection unavailable")
+        
     try:
         inquiry = await db.contact_inquiries.find_one({"id": inquiry_id}, {"_id": 0})
         if not inquiry:
