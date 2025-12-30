@@ -222,7 +222,7 @@ async def get_contact_inquiries():
     """
     Get all contact inquiries (for admin use)
     """
-    if not db:
+    if db is None:
         raise HTTPException(status_code=503, detail="Database connection unavailable")
         
     try:
