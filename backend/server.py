@@ -189,6 +189,9 @@ async def create_contact_inquiry(inquiry: ContactInquiryCreate):
     Create a new contact inquiry from the website contact form
     Sends email notification to business email
     """
+    if not db:
+        raise HTTPException(status_code=503, detail="Database connection unavailable")
+        
     try:
         # Create ContactInquiry object with additional fields
         inquiry_dict = inquiry.model_dump()
