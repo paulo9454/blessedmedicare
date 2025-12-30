@@ -92,6 +92,11 @@ async def close_db():
 # Create the main app without a prefix
 app = FastAPI()
 
+# Log successful app creation
+logger.info("✓ FastAPI app created successfully")
+logger.info("✓ MongoDB connection is lazy (non-blocking)")
+logger.info("✓ Health check endpoints configured")
+
 # Root health check for Kubernetes (no /api prefix)
 @app.get("/")
 async def root():
