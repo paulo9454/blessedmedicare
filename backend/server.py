@@ -222,6 +222,9 @@ async def get_contact_inquiries():
     """
     Get all contact inquiries (for admin use)
     """
+    if not db:
+        raise HTTPException(status_code=503, detail="Database connection unavailable")
+        
     try:
         # Exclude MongoDB's _id field from the query results
         inquiries = await db.contact_inquiries.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
