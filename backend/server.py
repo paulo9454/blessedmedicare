@@ -112,6 +112,18 @@ class StatusCheckCreate(BaseModel):
 async def root():
     return {"message": "Blessed Medicare Centre API"}
 
+@api_router.get("/health")
+async def health_check():
+    """
+    Fast health check endpoint for Kubernetes/Docker.
+    Does not depend on database - returns immediately.
+    """
+    return {
+        "status": "healthy",
+        "service": "blessed-medicare-api",
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
     db = await get_db()
