@@ -7,7 +7,7 @@ import logging
 import asyncio
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List
+from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 from models import ContactInquiry, ContactInquiryCreate
@@ -17,11 +17,6 @@ import resend
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-# Resend API Configuration
-resend.api_key = os.environ.get('RESEND_API_KEY', '')
-SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
-BUSINESS_EMAIL = os.environ.get('BUSINESS_EMAIL', 'info@blessedmedicare.co.ke')
-
 # Configure logging first
 logging.basicConfig(
     level=logging.INFO,
@@ -29,19 +24,70 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# MongoDB connection with error handling
-mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
-db_name = os.environ.get('DB_NAME', 'blessed_medicare')
+# Resend API Configuration (non-blocking)
+resend.api_key = os.environ.get('RESEND_API_KEY', '')
+SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
+BUSINESS_EMAIL = os.environ.get('BUSINESS_EMAIL', 'info@blessedmedicare.co.ke')
 
-try:
-    client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=5000)
-    db = client[db_name]
-    logger.info(f"MongoDB connection configured for: {db_name}")
-except Exception as e:
-    logger.error(f"MongoDB connection error: {str(e)}")
-    # Continue startup even if MongoDB fails initially
-    client = None
-    db = None
+# MongoDB configuration (NOT connected yet - lazy initialization)
+MONGO_URL = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+DB_NAME = os.environ.get('DB_NAME', 'blessed_medicare')
+
+# Global variables for lazy connection
+_client: Optional[AsyncIOMotorClient] = None
+_db = None
+_db_available = False
+
+async def get_db():
+    """
+    Lazy async MongoDB connection.
+    Connects only when first needed, not at import time.
+    Returns None if connection fails (app continues running).
+    """
+    global _client, _db, _db_available
+    
+    # Return cached connection if available
+    if _db is not None and _db_available:
+        return _db
+    
+    # Try to connect if not already attempted
+    if _client is None:
+        try:
+            logger.info(f"Attempting MongoDB connection to: {DB_NAME}")
+            _client = AsyncIOMotorClient(
+                MONGO_URL,
+                serverSelectionTimeoutMS=5000,
+                connectTimeoutMS=5000,
+                socketTimeoutMS=5000
+            )
+            
+            # Test connection with ping
+            await _client.admin.command('ping')
+            
+            _db = _client[DB_NAME]
+            _db_available = True
+            logger.info(f"✓ MongoDB connected successfully: {DB_NAME}")
+            return _db
+            
+        except Exception as e:
+            logger.error(f"✗ MongoDB connection failed: {str(e)}")
+            logger.info("App will continue without database (graceful degradation)")
+            _db_available = False
+            _client = None
+            _db = None
+            return None
+    
+    return _db
+
+async def close_db():
+    """Close MongoDB connection gracefully"""
+    global _client, _db, _db_available
+    if _client is not None:
+        _client.close()
+        logger.info("MongoDB connection closed")
+    _client = None
+    _db = None
+    _db_available = False
 
 # Create the main app without a prefix
 app = FastAPI()
