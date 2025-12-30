@@ -363,6 +363,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.on_event("startup")
+async def startup_event():
+    """Startup event handler - ensures app is ready"""
+    logger.info("🚀 Blessed Medicare API starting up...")
+    logger.info("✓ Health check endpoints: /, /health, /healthz, /ready")
+    logger.info("✓ API endpoints: /api/*")
+    logger.info("✓ CORS middleware configured")
+    logger.info("✓ MongoDB lazy connection ready")
+    logger.info("🎉 Blessed Medicare API startup complete!")
+
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    logger.info("🛑 Blessed Medicare API shutting down...")
     await close_db()
+    logger.info("✓ Shutdown complete")
