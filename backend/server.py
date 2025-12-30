@@ -95,11 +95,23 @@ app = FastAPI()
 # Root health check for Kubernetes (no /api prefix)
 @app.get("/")
 async def root():
-    return {"status": "ok"}
+    """Root endpoint - must respond quickly for Kubernetes"""
+    return {"status": "healthy", "service": "blessed-medicare-api"}
 
 @app.get("/health")
 async def health():
-    return {"status": "ok"}
+    """Health check endpoint - must respond quickly for Kubernetes"""
+    return {"status": "healthy", "service": "blessed-medicare-api"}
+
+@app.get("/healthz")
+async def healthz():
+    """Alternative health check endpoint (Kubernetes standard)"""
+    return {"status": "healthy", "service": "blessed-medicare-api"}
+
+@app.get("/ready")
+async def ready():
+    """Readiness probe endpoint"""
+    return {"status": "ready", "service": "blessed-medicare-api"}
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
