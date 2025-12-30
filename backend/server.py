@@ -68,7 +68,7 @@ async def root():
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
-    if not db:
+    if db is None:
         raise HTTPException(status_code=503, detail="Database connection unavailable")
         
     status_dict = input.model_dump()
@@ -83,7 +83,7 @@ async def create_status_check(input: StatusCheckCreate):
 
 @api_router.get("/status", response_model=List[StatusCheck])
 async def get_status_checks():
-    if not db:
+    if db is None:
         raise HTTPException(status_code=503, detail="Database connection unavailable")
         
     # Exclude MongoDB's _id field from the query results
